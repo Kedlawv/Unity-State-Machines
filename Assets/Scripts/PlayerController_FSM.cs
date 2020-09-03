@@ -21,6 +21,22 @@ public class PlayerController_FSM : MonoBehaviour
 
     #endregion
 
+    public Rigidbody Rigidbody
+    {
+        get { return rbody; }
+    }
+
+    private PlayerBaseState currentState;
+
+    public PlayerBaseState CurrentState
+    {
+        get { return currentState; }
+    }
+
+    public readonly PlayerIdleState IdleState = new PlayerIdleState();
+    public readonly PlayerJumpingState JumpingState = new PlayerJumpingState();
+    public readonly PlayerDuckingState DuckingState = new PlayerDuckingState();
+
     private void Awake()
     {
         face = GetComponentInChildren<SpriteRenderer>();
@@ -28,10 +44,26 @@ public class PlayerController_FSM : MonoBehaviour
         SetExpression(idleSprite);
     }
 
+    private void Start()
+    {
+        TransitionToState(IdleState);
+    }
+
     // Update is called once per frame
     void Update()
     {
+        currentState.Update(this);
+    }
 
+    public void TransitionToState(PlayerBaseState state)
+    {
+        currentState = state;
+        currentState.EnterState(this);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        currentState.OnCollisionEnter(this);
     }
 
     public void SetExpression(Sprite newExpression)
