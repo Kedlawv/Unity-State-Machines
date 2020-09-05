@@ -6,16 +6,19 @@ public class PlayerJumpingState : PlayerBaseState
 {
     public override void EnterState(PlayerController_FSM player)
     {
-        throw new System.NotImplementedException();
+        player.SetExpression(player.jumpingSprite);
     }
 
     public override void OnCollisionEnter(PlayerController_FSM player)
     {
-        throw new System.NotImplementedException();
+        player.TransitionToState(player.IdleState);
     }
 
     public override void Update(PlayerController_FSM player)
     {
-        throw new System.NotImplementedException();
+        if (Input.GetButtonDown("Duck"))
+        {
+            player.TransitionToState(new PlayerSpinningState());
+        }
     }
 }
